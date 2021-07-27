@@ -5,6 +5,7 @@ using UnityEngine;
 public class AgentMovement : MonoBehaviour
 {
     protected CharacterController characterController;
+    protected HumanoidAnimations agentAnimations;
     public float movementSpeed;
     public float gravity;
     public float rotationSpeed;
@@ -19,6 +20,7 @@ public class AgentMovement : MonoBehaviour
     private void Start() 
     {
         characterController = (CharacterController) GetComponent("CharacterController");
+        agentAnimations = (HumanoidAnimations) GetComponent("HumanoidAnimations");
         
     }
 
@@ -45,6 +47,7 @@ public class AgentMovement : MonoBehaviour
             // stop
             else
             {
+                agentAnimations.SetMovementFloat(0f);
                 moveDirection = Vector3.zero;
 
 
@@ -68,6 +71,15 @@ public class AgentMovement : MonoBehaviour
         
     }
 
+    public void RotateAgent()
+    {
+        if(desiredRotationAngle > angleRotationThreshold || desiredRotationAngle < -angleRotationThreshold)
+        {
+            transform.Rotate(Vector3.up * desiredRotationAngle * rotationSpeed * Time.deltaTime);
+        }
+
+    }
+
     private void Update() 
     {
         float delta = Time.deltaTime;
@@ -76,27 +88,16 @@ public class AgentMovement : MonoBehaviour
         {
             if(moveDirection.magnitude > 0)
             {
+                var animationSpeedMultipler = agentAnimations.SetCorrectAnimation(desiredRotationAngle, angleRotationThreshold, inputVerticalDirection);
                 RotateAgent();
-
-
+                moveDirection *= animationSpeedMultipler;
             }
-
-
         }
 
 
         moveDirection.y -= gravity;
 
         characterController.Move(moveDirection * delta);
-
-    }
-
-    public void RotateAgent()
-    {
-        if(desiredRotationAngle > angleRotationThreshold || desiredRotationAngle < -angleRotationThreshold)
-        {
-            transform.Rotate(Vector3.up * desiredRotationAngle * rotationSpeed * Time.deltaTime);
-        }
 
     }
 
