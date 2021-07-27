@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class MovementState : BaseState
 {
+    float fallingDelay = 0f;
+
     public override void EnterState(AgentController controller)
     {
         base.EnterState(controller);
+        //controllerReference.agentAnimations.ResetTriggers();
+        fallingDelay = 0.2f;
     }
 
     public override void HandleMovement(Vector2 input)
@@ -29,8 +33,20 @@ public class MovementState : BaseState
     public override void Update()
     {
         base.Update();
+
         HandleMovement(controllerReference.input.MovementInputVector);
         HandleCameraDirection(controllerReference.input.MovementDirectionVector);
+
+        if(controllerReference.movement.IsGrounded() == false)
+        {
+            if(fallingDelay > 0)
+            {
+                fallingDelay -= Time.deltaTime;
+                return;
+            }
+
+            controllerReference.TransitionToState(controllerReference.fallingState);
+        }
     }
 
 }

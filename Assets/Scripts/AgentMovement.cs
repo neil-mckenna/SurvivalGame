@@ -19,12 +19,19 @@ public class AgentMovement : MonoBehaviour
     int inputVerticalDirection = 0;
 
     bool isJumping = false;
+    bool finishedJumping = true;
 
     private void Start() 
     {
         characterController = (CharacterController) GetComponent("CharacterController");
         agentAnimations = (HumanoidAnimations) GetComponent("HumanoidAnimations");
         
+    }
+
+    public bool IsGrounded()
+    {
+        return characterController.isGrounded;
+
     }
 
     public void HandleMovement(Vector2 input)
@@ -80,6 +87,8 @@ public class AgentMovement : MonoBehaviour
         {
             isJumping = true;
         }
+
+        
     }
 
     public void RotateAgent()
@@ -90,6 +99,14 @@ public class AgentMovement : MonoBehaviour
         }
 
     }
+
+    public void StopMovementImmediately()
+    {
+        Debug.Log("Stop was called");
+        moveDirection = Vector3.zero;
+        transform.rotation = Quaternion.Euler(0,0,0);
+    }
+
 
     private void Update() 
     {
@@ -110,12 +127,26 @@ public class AgentMovement : MonoBehaviour
         if(isJumping)
         {
             isJumping = false;
+            finishedJumping = false;
             moveDirection.y = jumpSpeed;
             agentAnimations.SetMovementFloat(0f);
+            agentAnimations.TriggerJumpAnimation();
         }
-
+        
+        
         characterController.Move(moveDirection * delta);
 
+
+    }
+
+    public bool HasFinishedJumping()
+    {
+        return finishedJumping;
+    }
+
+    public void SetFinishedJumping()
+    {
+        finishedJumping = true;
     }
 
 
