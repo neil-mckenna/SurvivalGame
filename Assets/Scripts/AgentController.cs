@@ -5,32 +5,49 @@ using UnityEngine;
 public class AgentController : MonoBehaviour
 {
     public AgentMovement movement;
-    public PlayerInput playerInput;
+    public PlayerInput input;
 
-    private void Start() 
-    {
-        movement = (AgentMovement) GetComponent("AgentMovement");
-        playerInput = (PlayerInput) GetComponent("PlayerInput");
-        
-    }
+    BaseState currentState;
+    public readonly BaseState movementState = new MovementState();
+    public readonly BaseState jumpState = new JumpState();
 
     private void OnEnable() 
     {
-        playerInput.OnJump += movement.HandleJump;
-        
+        movement = (AgentMovement) GetComponent("AgentMovement");
+        input = (PlayerInput) GetComponent("PlayerInput");
+        currentState = movementState;
+        currentState.EnterState(this);
+        AssignMovementInputListeners();
+            
     }
 
     private void OnDisable() 
     {
-        playerInput.OnJump -= movement.HandleJump;
+        input.OnJump -= currentState.HandleJumpInput;
         
+    }
+
+    public void AssignMovementInputListeners()
+    {
+        input.OnJump += HandleJump;
+
+    }
+
+    private void HandleJump()
+    {
+        currentState.HandleJumpInput();
     }
 
     private void Update() 
     {
-        movement.HandleMovement(playerInput.MovementInputVector);
-        movement.HandleMovementDirection(playerInput.MovementDirectionVector);
+        currentState.Update();
 
+    }
+
+    public void TransitionToState(BaseState state)
+    {
+        currentState = state;
+        currentState.EnterState(this);
     }
 
 }
