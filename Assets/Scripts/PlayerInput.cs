@@ -32,7 +32,7 @@ public class PlayerInput : MonoBehaviour
 
         MovementInputVector = new Vector2(horz, vert);
 
-        Debug.Log(MovementInputVector);
+        //Debug.Log(MovementInputVector);
 
     }
 
@@ -40,11 +40,11 @@ public class PlayerInput : MonoBehaviour
     {
         var cameraForwardDirection = mainCamera.transform.forward;
 
-        Debug.DrawRay(mainCamera.transform.position, cameraForwardDirection * 10f , Color.red);
+        //Debug.DrawRay(mainCamera.transform.position, cameraForwardDirection * 10f , Color.red);
 
         MovementDirectionVector = Vector3.Scale(cameraForwardDirection, (Vector3.right + Vector3.forward));
 
-        Debug.DrawRay(mainCamera.transform.position, MovementDirectionVector * 10f , Color.green);
+        //Debug.DrawRay(mainCamera.transform.position, MovementDirectionVector * 10f , Color.green);
 
 
 
