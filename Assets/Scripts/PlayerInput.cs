@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,19 +10,22 @@ public class PlayerInput : MonoBehaviour
 
     public Vector3 MovementDirectionVector { get; private set; }
 
+    public Action OnJump { get; set; } 
+
     private Camera mainCamera;
 
     private void Start() 
     {
         mainCamera = Camera.main;
+        Cursor.lockState = CursorLockMode.Locked;
         
     }
-
 
     private void Update() 
     {
         GetMovementInput();
         GetMovementDirection();
+        GetJumpInput();
 
     }
 
@@ -47,6 +51,15 @@ public class PlayerInput : MonoBehaviour
         //Debug.DrawRay(mainCamera.transform.position, MovementDirectionVector * 10f , Color.green);
 
 
+    }
+
+    public void GetJumpInput()
+    {
+        if(Input.GetAxisRaw("Jump") > 0)
+        {
+            OnJump?.Invoke();
+
+        }
 
 
     }

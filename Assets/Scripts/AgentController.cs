@@ -11,6 +11,19 @@ public class AgentController : MonoBehaviour
     {
         movement = (AgentMovement) GetComponent("AgentMovement");
         playerInput = (PlayerInput) GetComponent("PlayerInput");
+        
+    }
+
+    private void OnEnable() 
+    {
+        playerInput.OnJump += movement.HandleJump;
+        
+    }
+
+    private void OnDisable() 
+    {
+        playerInput.OnJump -= movement.HandleJump;
+        
     }
 
     private void Update() 
